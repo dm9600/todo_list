@@ -47,13 +47,13 @@ def saveTodoList(TodoList):
     viewTodoList(TodoList)
     return
 
-def loadTodoList(listName):
+def loadTodoList(path):
     #Defines the file to look for
     yourfile = file(listName + ".ser", "r")
 
     #Loads the targetted file
-    currentTodoList = pickle.load(yourfile)  
-    print "You've loaded the TodoList " + listName
+    currentTodoList = pickle.load(path)  
+    print "You've loaded the TodoList " + path
     return currentTodoList
 
 
