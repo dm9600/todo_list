@@ -4,7 +4,7 @@ This simple program was the first python program I ever wrote that wasn't a book
 
 ## How to run it
 
-Download the files into a new directory and run "python run.py". You should be greeted with some options.
+Download the files into a new directory and run "python run.py". You should be greeted with some options. I used Python 2.7.3 to write it.
 
 ## Structure
 
