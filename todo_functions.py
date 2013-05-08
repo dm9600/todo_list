@@ -1,16 +1,17 @@
-#TodoList version 1.0
-#by dm9600
-#A simple todo list program
+#This file is for all functions that manipulate todo_list and todo
 
 import pickle
+import todo
+import todolist
 
 def newTodoList():
     #The initial menu
     print "Hello User, would you like to create a new Todo" \
-        "List or modify an existing one?"
+            "List or modify an existing one?"
     print "a) Create new List"
     print "b) View existing list"
     print "c) Load list from file"
+    print "d) Exit"
     response = raw_input(">")
 
     #If the user decides to create a new list
@@ -21,18 +22,20 @@ def newTodoList():
         print "You have created a new list with name " + listName 
         viewTodoList(newList)
 
-    #If the user decides to see an existing list
     elif response == "b":
+        #If the user decides to see an existing list
         print "Please enter in your list's name"
         listName = raw_input(">")
         currentTodoList = loadTodoList(listName)
         viewTodoList(currentTodoList)
 
-    #If the user wants to laod from file
     elif response == "c":
+        #If the user wants to laod from file
         print "Please enter in the name of the file"
         filename = raw_input(">")
         viewTodoList(loadFromFile(filename))
+    elif response == "d":
+        exit()       
 
 def addTodo(todoList):
     #Todo item
@@ -49,8 +52,8 @@ def addTodo(todoList):
         newTodo = Todo(newPriority, newTodoItem)
         todoList.addTodo(newTodo)        
         print "You've created a new Todo: " \
-        + newTodoItem + " with a priority of " \
-        + newPriority + ". What would you like to do now?"
+                + newTodoItem + " with a priority of " \
+                + newPriority + ". What would you like to do now?"
         print "a) View my list"
         print "b) Save and quit"
         response = raw_input(">")
@@ -68,8 +71,7 @@ def addTodo(todoList):
 
 #View a todolist, and give lots of options
 def viewTodoList(TodoList):
-    if not isinstance(TodoList.todolist, basestring) \
-            and len(TodoList.todolist) > 0:
+    if not isinstance(TodoList.todolist, basestring) and len(TodoList.todolist) > 0:
         print "Here are the current todos on the list: "
         for todo in TodoList.todolist:
             print todo.getPriority() + ": " + todo.getTodo()
@@ -82,7 +84,7 @@ def viewTodoList(TodoList):
     print "e) Modify Todo"
     print "f) Exit"
     print "g) Save to file"
-    
+
     response = raw_input(">")
     if response == "a":
         addTodo(TodoList)
@@ -112,7 +114,7 @@ def removeTodo(TodoList, index):
     #Removes the todo from the list and returns removedTodo
     removedTodo = TodoList.todolist.pop(0)
     print "You've removed the following todo from your todolist: " \
-        + removedTodo.getTodo()
+            + removedTodo.getTodo()
     print "with priority: " + removedTodo.getPriority()
     #Return to view flow when finished
     viewTodoList(TodoList)
@@ -156,113 +158,4 @@ def changeTodoPriority(Todo):
     Todo.setPriority(response)
     return
 
-#Load a todolist from a file. File should be formatted like this:
-#"4: Something to do, 3: Something else to do," etc
-def loadFromFile(filename):
-    #Sets the default return value
-    returnValue = TodoList([], "nothing")
-
-    #Reads the file and splits it by commas
-    todoStringList = open(filename, "r").read().split(",")
-
-    #Populates the todolist with todos
-    todolist = []
-    for string in todoStringList:
-        todoString = string.strip().split(":")
-        todolist.append(Todo(todoString[0], todoString[1]))
-        
-    #The new list will be named with the filename minus the extension
-    filenameNoExt = filename.split(".")
-    returnValue = TodoList(todolist, filenameNoExt)    
-
-    return returnValue
-    
-    #Populate a new todolist with the file contents
-    newTodoList = []
-    for rawTodo in trimmedFile:
-        rawTodoSplit = rawTodo.split(":")
-        newTodoList.append(Todo(rawTodoSplit[0], rawTodoSplit[1]))
-    
-    #Create new list with name filename minus .txt with newTodoList
-    returnValue = TodoList(newTodoList, filename.strip(".txt"))
-    return returnValue
-
-def outputAsFile(TodoList, filename):
-    returnValue = open(filename + ".txt", "w")
-    outString = ""
-    for index, todo in enumerate(TodoList.todolist):
-        outString += todo.priority + ":" + todo.todo
-        if not index == len(TodoList.todolist) - 1:
-            outString += ","
-    returnValue.write(outString)
-    print "You've written your todo to the file " \
-        + filename + ".txt"
-    return 
-
-def exitProgram():
-    print "Goodbye User"
-
-def saveTodoList(TodoList):    
-    #Creates the filename for the TodoList
-    filename = TodoList.listName + ".ser"
-
-    #Defines the file that'll be written. "w" indicates it's writeable
-    yourfile = file("output/" + filename, "w")
-    
-    #Serialize the file
-    pickle.dump(TodoList, yourfile)
-    print "You've saved your list to " + filename
-    
-    viewTodoList(TodoList)
-    return
-
-def loadTodoList(listName):
-    #Defines the file to look for
-    yourfile = file(listName + ".ser", "r")
-    
-    #Loads the targetted file
-    currentTodoList = pickle.load(yourfile)  
-    print "You've loaded the TodoList " + listName
-    return currentTodoList
-
-class TodoList:
-    todolist = "empty"
-    listName = "no name"
-    
-    #Constructor
-    def __init__(self, todolist, listName):
-        self.todolist = todolist
-        self.listName = listName
-
-    #Method for adding todos
-    def addTodo(self, todo):
-        if self.todolist == "empty":
-            self.todolist = [todo]
-        elif isinstance(self.todolist, list):            
-            self.todolist.append(todo)
-    
-    #Sorting the list by priority
-    def sortTodos(self):
-        self.todolist = sorted(self.todolist, key=lambda todo: todo.priority)
-
-class Todo:
-    priority = 0
-    todo = "nothing"
-
-    def __init__(self, priority, todo):
-        self.priority = priority
-        self.todo = todo
-
-    def setPriority(self, priority):
-        self.priority = priority
-        
-    def getPriority(self):
-        return self.priority
-
-    def setTodo(self, todo):
-        self.todo = todo
-        
-    def getTodo(self):
-        return self.todo
-        
 
