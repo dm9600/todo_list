@@ -8,4 +8,8 @@ from io_functions import *
 import todo
 import todolist
 
-newTodoList()
+def main():
+    newTodoList()
+
+if __name__ == "__main__":
+    main()

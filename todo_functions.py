@@ -3,6 +3,7 @@
 import pickle
 import todo
 import todolist
+import io_functions
 
 def newTodoList():
     #The initial menu
@@ -18,7 +19,7 @@ def newTodoList():
     if response == "a":
         print "Please give your new list a name"
         listName = raw_input(">")
-        newList = TodoList("empty", listName)
+        newList = todolist.TodoList("empty", listName)
         print "You have created a new list with name " + listName 
         viewTodoList(newList)
 
@@ -26,14 +27,14 @@ def newTodoList():
         #If the user decides to see an existing list
         print "Please enter in your list's name"
         listName = raw_input(">")
-        currentTodoList = loadTodoList(listName)
+        currentTodoList = io_functions.loadTodoList(listName)
         viewTodoList(currentTodoList)
 
     elif response == "c":
-        #If the user wants to laod from file
+        #If the user wants to load from file
         print "Please enter in the name of the file"
         filename = raw_input(">")
-        viewTodoList(loadFromFile(filename))
+        viewTodoList(io_functions.loadFromFile(filename))
     elif response == "d":
         exit()       
 
@@ -49,7 +50,7 @@ def addTodo(todoList):
 
     #Raw input comes out as a string, so it needs to get cast first
     if int(newPriority) > 0 and int(newPriority) <= 10:
-        newTodo = Todo(newPriority, newTodoItem)
+        newTodo = todo.Todo(newPriority, newTodoItem)
         todoList.addTodo(newTodo)        
         print "You've created a new Todo: " \
                 + newTodoItem + " with a priority of " \
@@ -62,7 +63,7 @@ def addTodo(todoList):
         if response == "a":
             viewTodoList(todoList)
         elif response == "b":
-            saveTodoList(todoList)
+            io_functions.saveTodoList(todoList)
             exit()
     else:
         print "Priority needs to be between 0 and 10"
@@ -97,15 +98,15 @@ def viewTodoList(TodoList):
         print "TodoList has been sorted"
         viewTodoList(TodoList)
     elif response == "d":
-        saveTodoList(TodoList)
+        io_functions.saveTodoList(TodoList)
     elif response == "e":
         print "Please enter in the index of the todo you'd like to modify"
         response = raw_input(">")
         modifyTodo(TodoList, response)
     elif response == "f":
-        exitProgram()
+        exit()   
     elif response == "g":
-        outputAsFile(TodoList, TodoList.listName)
+        io_functions.outputAsFile(TodoList, TodoList.listName)
         viewTodoList(TodoList)
     return
 
